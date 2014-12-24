@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+img
+{
+	vertical-align: middle;
+}
+.kanji
+{
+	font-size: 72px;
+	vertical-align: middle;
+}
+.hidden{
+	display: none;
+}
+</style>
+<script>
+
+window.KANJI = {};
+/*
+Format: "vocabulary": {"meaning": "", "furigana": "", "strokes": {}}
+*/
+
+function $(param){
+	var query = document.querySelectorAll(param);
+	if(query.length == 1)
+		return query[0];
+	else
+		return query;
+}
+
+function load(){
+	if(!localStorage.kanjis){
+		$("#kanjis").innerHTML = "<span>No data found.</span>";
+		return;
+	}
+	KANJI = JSON.parse(localStorage.kanjis);
+	var output = "";
+	var count = 1;
+	for(var vocab in KANJI){
+		output += "<div>" + count + ".&nbsp;<span class='kanji'>" + vocab + 
+		"</span>&nbsp;[" + KANJI[vocab].meaning+ "]<br />furigana: " + KANJI[vocab].furigana + "<br />";
+		for(var s in KANJI[vocab]["strokes"]){
+			output += "[" + s + "]: <img src='" + (KANJI[vocab]["strokes"][s].indexOf("png") != -1 ?  KANJI[vocab]["strokes"][s]: "https://cdn0.iconfinder.com/data/icons/cosmo-documents/40/document_unknown-128.png") + "' /><br/>";
+		}
+		output += "<br/></div>";	
+		count++;
+	}
+	$("#kanjis").innerHTML = output;
+}
+
+function add(){
+	var vocab = $("#vocab").value;
+	var meaning = $("#meaning").value;
+	var furigana = $("#furigana").value;
+	var strokes = $(".stroke");
+	var kanjiMeanings = $(".kanji-meaning");
+	
+	
+	if(KANJI[vocab]){
+		setMessage(vocab + " already exist!");
+		return;
+	}else{
+		if(vocab == ""){
+			setMessage("Input a vocabulary!", 5000);
+			return;
+		}
+		KANJI[vocab] = {
+			"meaning": meaning,
+			"furigana": furigana,
+			"strokes": {}
+		};
+		
+		var i = 0;
+		for(meaning in kanjiMeanings){
+			if(kanjiMeanings[meaning].value === undefined || kanjiMeanings[meaning].value == ""){
+				continue;
+			}
+			KANJI[vocab]["strokes"][kanjiMeanings[meaning].value] = strokes[i++].value;
+		}
+		
+		localStorage.kanjis = JSON.stringify(window.KANJI);
+		setMessage(vocab + " added!");
+		load();
+		clearForms();
+	}
+}
+//会赤朝足後雨歩言家行一日五今入口生駅大母金
+//父男子大人
+
+
+
+//{"会う":{"meaning":"to meet ","furigana":"あう","strokes":{"meet":"http://jisho.org/static/images/stroke_diagrams/20250_frames.png"}},"赤い":{"meaning":"red","furigana":"あかい","strokes":{"red":"http://jisho.org/static/images/stroke_diagrams/36196_frames.png"}},"朝":{"meaning":"morning","furigana":"あさ","strokes":{"morning":"http://jisho.org/static/images/stroke_diagrams/26397_frames.png"}},"足":{"meaning":"leg, foot","furigana":"あし","strokes":{"foot/leg":"http://jisho.org/static/images/stroke_diagrams/36275_frames.png"}},"後":{"meaning":"later, after, afterwards","furigana":"あと","strokes":{"later":"http://jisho.org/static/images/stroke_diagrams/24460_frames.png"}},"雨":{"meaning":"rain","furigana":"あめ","strokes":{"rain":"http://jisho.org/static/images/stroke_diagrams/38632_frames.png"}},"歩く":{"meaning":"to walk","furigana":"あるく","strokes":{"walk":"http://jisho.org/static/images/stroke_diagrams/27497_frames.png"}},"言う":{"meaning":"to say, to tell","furigana":"いう","strokes":{"say":"http://jisho.org/static/images/stroke_diagrams/35328_frames.png"}},"家":{"meaning":"house","furigana":"いえ","strokes":{"house":"http://jisho.org/static/images/stroke_diagrams/23478_frames.png"}},"行く":{"meaning":"to go","furigana":"いく","strokes":{"going":"http://jisho.org/static/images/stroke_diagrams/34892_frames.png"}},"一":{"meaning":"one","furigana":"いち","strokes":{"one":"http://jisho.org/static/images/stroke_diagrams/19968_frames.png"}},"一日":{"meaning":"(1) one day, (2) first of month","furigana":"いちにち","strokes":{"one":"http://jisho.org/static/images/stroke_diagrams/19968_frames.png","day, Japan, sun":"http://jisho.org/static/images/stroke_diagrams/26085_frames.png"}},"五日":{"meaning":"five days, fifth day","furigana":"いつか","strokes":{"five":"http://jisho.org/static/images/stroke_diagrams/20116_frames.png","day, Japan, sun":"http://jisho.org/static/images/stroke_diagrams/26085_frames.png"}},"五つ":{"meaning":"five","furigana":"いつつ","strokes":{"five":"http://jisho.org/static/images/stroke_diagrams/20116_frames.png"}},"今":{"meaning":"now","furigana":"いま","strokes":{"now":"http://jisho.org/static/images/stroke_diagrams/20170_frames.png"}},"入口":{"meaning":"entrance","furigana":"いりぐち","strokes":{"enter, insert":"http://jisho.org/static/images/stroke_diagrams/20837_frames.png","mouth":"http://jisho.org/static/images/stroke_diagrams/21475_frames.png"}},"入れる":{"meaning":"to insert, to put in","furigana":"いれる","strokes":{"enter, insert":"http://jisho.org/static/images/stroke_diagrams/20837_frames.png"}},"後ろ":{"meaning":"back, rear, behind","furigana":"うしろ","strokes":{"back, behind, later":"http://jisho.org/static/images/stroke_diagrams/24460_frames.png"}},"生まれる":{"meaning":"to be born","furigana":"うまれる","strokes":{"birth, genuine, life":"http://jisho.org/static/images/stroke_diagrams/29983_frames.png"}},"駅":{"meaning":"station","furigana":"えき","strokes":{"station":"http://jisho.org/static/images/stroke_diagrams/39365_frames.png"}},"大きい":{"meaning":"big","furigana":"おおきい","strokes":{"big, large":"http://jisho.org/static/images/stroke_diagrams/22823_frames.png"}},"お母さん":{"meaning":"(honorable) mother","furigana":"おかあさん","strokes":{"mother":"http://jisho.org/static/images/stroke_diagrams/27597_frames.png"}},"お金":{"meaning":"money","furigana":"おかね","strokes":{"gold":"http://jisho.org/static/images/stroke_diagrams/37329_frames.png"}},"お父さん":{"meaning":"(honorable) father","furigana":"おとうさん","strokes":{"father":"http://jisho.org/static/images/stroke_diagrams/29238_frames.png"}},"男":{"meaning":"man","furigana":"おとこ","strokes":{"male":"http://jisho.org/static/images/stroke_diagrams/30007_frames.png"}},"男の子":{"meaning":"boy","furigana":"おとこのこ","strokes":{"male":"http://jisho.org/static/images/stroke_diagrams/30007_frames.png","child":"http://jisho.org/static/images/stroke_diagrams/23376_frames.png"}},"大人":{"meaning":"adult","furigana":"おとな","strokes":{"big, large":"http://jisho.org/static/images/stroke_diagrams/22823_frames.png","person":"http://jisho.org/static/images/stroke_diagrams/20154_frames.png"}}}
+	
+function clearVocab(){
+	var clearVocab = confirm("Are you sure you want to clear the vocabulary?");
+	if(!clearVocab) return;
+	
+	if(localStorage.kanjis){
+		clearForms();
+		KANJI = {};
+		delete(localStorage.kanjis);
+		load();
+		setMessage("Vocabulary cleared!");
+	}
+}
+
+function setMessage(msg, life){
+	$("#msg").innerHTML = msg;
+	setTimeout(function(){
+		$("#msg").innerHTML = "";
+	}, life | 3000);
+}
+
+function showVocabForm(show){
+	$("#addVocab").style["display"] = (show == true ? "block" : "none");
+	$("#showVocabForm").style["display"] = (show == true ? "none" : "block");
+}
+
+function init(){
+	//showVocabForm(false);
+	load();
+}
+
+function exportData(){
+	$("#exportdata").value = JSON.stringify(window.KANJI);
+	$("#exportdata").style["display"] = "block";
+}
+
+
+function importData(){
+	var override = confirm("Are you sure you want override vocabulary?");
+	if(!override) return;
+	KANJI = JSON.parse($("#kanji-data").value);
+	localStorage.kanjis = JSON.stringify(window.KANJI);
+	showVocabForm(false);
+	setMessage("Data imported!");
+	load();
+}
+
+function exportData(){
+	$("#kanji-data").value = JSON.stringify(window.KANJI);
+	$("#kanji-data").style["display"] = "block";
+}
+
+function clearForms(){
+	var inputs = $("input");
+	for(input in inputs){
+		inputs[input].value = "";
+	}
+}
+</script>
+</head>
+<body onload="init()">
+
+<div id="addVocab">
+<button id="hideVocabForm" onclick="showVocabForm(false);">Hide</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button id="Clear" onclick="clearVocab();">Clear</button><br />
+
+<br />
+<strong>Front:</strong> 
+<input id="vocab" type="text" placeholder="Vocabulary" />
+<br />
+<br />
+<strong>Back:&nbsp;</strong> 
+<input id="furigana" type="text" placeholder="Furigana" /> <input id="meaning" type="text" placeholder="Meaning" />
+
+<br />
+<i>Kanji:</i><br />
+<div id="strokes" >
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="kanji-meaning" type="text" placeholder="Kanji Meaning I" /> <input class="stroke" type="text" placeholder="Kanji Stroke I" /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="kanji-meaning" type="text" placeholder="Kanji Meaning II" /> <input class="stroke" type="text" placeholder="Kanji Stroke II" /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="kanji-meaning" type="text" placeholder="Kanji Meaning III" /> <input class="stroke" type="text" placeholder="Kanji Stroke III" />
+</div>
+<br />
+<div>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button id="add" onclick="add();">Add</button><br />
+<button onclick="importData();">Import</button>
+<button onclick="exportData();">Export</button>
+
+<textarea id="kanji-data" class="hidden" style="height: 5em; width: 29.5em;"></textarea>
+
+</div>
+
+<hr />
+</div>
+<button id="showVocabForm" class="hidden" onclick="showVocabForm(true);">Options</button>
+
+<div id="msg" style="height: 1em;"></div>
+<h1>Vocabulary</h1>
+<div id="kanjis"></div>
+
+
+</body>
+</html>
